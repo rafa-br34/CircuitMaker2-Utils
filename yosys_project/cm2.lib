@@ -1,0 +1,438 @@
+/*
+ * This file describes the available "base components" that Yosys can use.
+ * Yosys will try to map abstract components into the components that this file describes.
+ * The "area" parameter defines how "expensive" a cell is
+ * so if you want Yosys to prioritize some component that's the parameter you want to change.
+ * The default area of every component is set to 8, but more expensive components have a greater area.
+ *
+ * This file uses the Liberty file format (owned by Synopsys).
+ * As of 2024 you can get the documentation for the Liberty file format from the following URL:
+ * http://www.opensourceliberty.org/ (Redirects to https://www.synopsys.com/community/interoperability-programs/tap-in.html)
+ *
+ * This file is part of https://github.com/rafa-br34/CircuitMaker2-Utils and should be redistributed under the same license.
+ */
+
+library(cm2) {
+	time_unit: "1ns";
+	capacitive_load_unit(1, pf);
+
+	/*
+	 * Registers
+	 * This area defines registers and flipflops/latches
+	 *
+	 * REG: Defines a D-Type Flip-Flop
+	 * REG_SET: Defines a D-Type Flip-Flop with async set
+	 * REG_RST: Defines a D-Type Flip-Flop with async reset
+	 * REG_SR: Defines a D-Type Flip-Flop with async set and reset
+	 * LATCH
+	 */
+
+	cell(REG) {
+		area: 24;
+		
+		ff(CS, SN) { clocked_on: CLK; next_state: IS; }
+		
+		pin(CLK) { direction: input; clock: true; }
+		pin(IS) { direction: input; }
+		
+		pin(OS) { direction: output; function: "CS"; }
+	}
+	cell(REG_SET) {
+		area: 32;
+		
+		ff(CS, SN) { clocked_on: CLK; next_state: IS; preset: SET; }
+		
+		pin(CLK) { direction: input; clock: true; }
+		pin(IS) { direction: input; }
+		pin(SET) { direction: input; }
+		
+		pin(OS) { direction: output; function: "CS"; }
+	}
+	cell(REG_RST) {
+		area: 32;
+		
+		ff(CS, SN) { clocked_on: CLK; next_state: IS; clear: RST; }
+		
+		pin(CLK) { direction: input; clock: true; }
+		pin(IS) { direction: input; }
+		pin(RST) { direction: input; }
+		
+		pin(OS) { direction: output; function: "CS"; }
+	}
+	cell(REG_SR) {
+		area: 48;
+		
+		ff(CS, SN) { clocked_on: CLK; next_state: IS; clear: RST; preset: SET; }
+		
+		pin(CLK) { direction: input; clock: true; }
+		pin(IS) { direction: input; }
+		pin(RST) { direction: input; }
+		pin(SET) { direction: input; }
+		
+		pin(OS) { direction: output; function: "CS"; }
+	}
+	cell(LATCH) {
+		area: 24;
+		
+		latch(Q) {
+			data_in: T;
+			enable: EN;
+			enable_level: high;
+			data_in_invert: true;
+			next_state: "!Q";
+		}
+
+		pin(T) { direction: input; }
+		pin(EN) { direction: input; }
+		pin(Q) { direction: output; function: "Q"; }
+	}
+
+	/*
+	 * Single block
+	 * This area defines single blocks components
+	 *
+	 * BUF: Relays a signal (required depending on the project and build settings)
+	 * NOT: Inverts a signal
+	 */
+	
+	cell(BUF) {
+		area: 64;
+		pin(A) { direction: input; }
+		pin(Y) { direction: output; function: "A"; }
+	}
+	cell(NOT) {
+		area: 8;
+		pin(A) { direction: input; }
+		pin(Y) { direction: output; function: "!A"; }
+	}
+	
+	/*
+	 * NOR
+	 * This area defines NOR gates of multiple inputs
+	 */
+	cell(NOR_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		
+		pin(Y) { direction: output; function: "!(A | B)"; }
+	}
+	cell(NOR_3) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A | B | C)"; }
+	}
+	cell(NOR_4) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A | B | C | D)"; }
+	}
+	cell(NOR_5) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A | B | C | D | E)"; }
+	}
+	cell(NOR_6) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A | B | C | D | E | F)"; }
+	}
+
+	/*
+	 * OR
+	 * This area defines OR gates of multiple inputs
+	 */
+	cell(OR_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		
+		pin(Y) { direction: output; function: "A | B"; }
+	}
+	cell(OR_3) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "A | B | C"; }
+	}
+	cell(OR_4) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "A | B | C | D"; }
+	}
+	cell(OR_5) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "A | B | C | D | E"; }
+	}
+	cell(OR_6) {
+		area: 8;
+
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "A | B | C | D | E | F"; }
+	}
+
+	/*
+	 * AND
+	 * This area defines AND gates of multiple inputs
+	 */
+	cell(AND_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+
+		pin(Y) { direction: output; function: "A & B"; }
+	}
+	cell(AND_3) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "A & B & C"; }
+	}
+	cell(AND_4) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "A & B & C & D"; }
+	}
+	cell(AND_5) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "A & B & C & D & E"; }
+	}
+	cell(AND_6) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "A & B & C & D & E & F"; }
+	}
+	
+	/*
+	 * XOR
+	 * This area defines XOR gates of multiple inputs
+	 */
+	cell(XOR_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+
+		pin(Y) { direction: output; function: "A ^ B"; }
+	}
+	cell(XOR_3) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "A ^ B ^ C"; }
+	}
+	cell(XOR_4) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "A ^ B ^ C ^ D"; }
+	}
+	cell(XOR_5) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "A ^ B ^ C ^ D ^ E"; }
+	}
+	cell(XOR_6) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "A ^ B ^ C ^ D ^ E ^ F"; }
+	}
+	
+	/*
+	 * NAND
+	 * This area defines NAND gates of multiple inputs
+	 */
+	cell(NAND_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A & B)"; }
+	}
+	cell(NAND_3) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A & B & C)"; }
+	}
+	cell(NAND_4) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A & B & C & D)"; }
+	}
+	cell(NAND_5) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A & B & C & D & E)"; }
+	}
+	cell(NAND_6) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A & B & C & D & E & F)"; }
+	}
+
+	/*
+	 * XNOR
+	 * This area defines XNOR gates of multiple inputs
+	 */
+	cell(XNOR_2) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A ^ B)"; }
+	}
+	cell(XNOR_3) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A ^ B ^ C)"; }
+	}
+	cell(XNOR_4) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A ^ B ^ C ^ D)"; }
+	}
+	cell(XNOR_5) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A ^ B ^ C ^ D ^ E)"; }
+	}
+	cell(XNOR_6) {
+		area: 8;
+		
+		pin(A) { direction: input; }
+		pin(B) { direction: input; }
+		pin(C) { direction: input; }
+		pin(D) { direction: input; }
+		pin(E) { direction: input; }
+		pin(F) { direction: input; }
+
+		pin(Y) { direction: output; function: "!(A ^ B ^ C ^ D ^ E ^ F)"; }
+	}
+}
