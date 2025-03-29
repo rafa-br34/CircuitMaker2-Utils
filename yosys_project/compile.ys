@@ -1,7 +1,5 @@
-read_verilog -sv ALU.v
-read_verilog -sv cpu.v
-read_verilog -sv examples/graphics_decoder.sv
-hierarchy -check -top graphics
+read_verilog -sv examples/multiplexers.sv
+hierarchy -check -top multiplexer
 
 read_liberty cm2.lib
 

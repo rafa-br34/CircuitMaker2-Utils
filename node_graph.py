@@ -37,7 +37,7 @@ def parse_arguments():
 
 	parser.add_argument(
 		"--format", "-f",
-		help=f"The output graph format, possible values: [{enum_to_string(GraphType)}]",
+		help=f"The output graph format, possible values: {enum_to_string(GraphType)}",
 		type=str, default=c_format
 	)
 

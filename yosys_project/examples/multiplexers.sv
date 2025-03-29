@@ -1,6 +1,6 @@
-parameter BUS_SIZE = 12 + 8;
-parameter IDX_SIZE = 4;
-parameter IDX_COUNT = 4;
+parameter BUS_SIZE = 16; // Size of the input/output bus
+parameter IDX_COUNT = 16; // Amount of indexes
+parameter IDX_SIZE = 4; // Size of the index wire
 
 module multiplexer(input wire[BUS_SIZE * IDX_COUNT - 1:0] input_bus, input wire[IDX_SIZE-1:0] index, output wire[BUS_SIZE - 1:0] output_bus);
 	always_comb begin
